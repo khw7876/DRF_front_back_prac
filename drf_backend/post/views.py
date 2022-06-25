@@ -1,4 +1,5 @@
 from functools import partial
+from os import stat
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework import permissions, status
@@ -11,7 +12,9 @@ class PostView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self,request):
-        return Response()
+        user = request.user
+        post_obj = PostModel.objects.filter(user = user)
+        return Response(PostSerializer(post_obj, many = True).data, status = status.HTTP_200_OK)
 
     def post(self,request):
         user = request.user
